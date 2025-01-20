@@ -1,68 +1,79 @@
 # Nottingham New Theatre Technical Training 
-## Django-based training system - contains a training specification, split into categories; full membership details; and details of individual training sessions.
+## Nuxt-based training system
 
-The training site is a move from a paper training system to a digital one. It is extendable, and fully customisable through the Django admin interface. 
-
-Its use over a paper system is not only good for trees, but also serves to be accessible anywhere, by anyone; easier to update and manage, filter, or organise; and offers a higher level of authorisation.
+The training site is rewrite of the digital training system. It has a user-friendly interface, and is designed to be easy to use. The backend is hosted on firebase.
 
 ### Key Idea
 Training is given to a person (or people) through training sessions, where another person is designated trainer. Anyone can be a trainer, but training sessions can only be added by authorised users.
 
-# Running locally 
+## Setup
 
-You will need: 
-* Django 1.11.1 
-* Python 3.6.1 (and Pip) 
-* ǸPM (for Bootstrap 4, Sass and Compass)
+Make sure to install dependencies:
 
-## Installation 
-### Python Virtualenv 
-Using your preferred mechanism, create a virtual Python environment. This could be with PyCharm or virtualenv. I used virtualenv, like so:
-
-```
-virtualenv <dir>
-``` 
-
-Where `<dir>` is a given directory; something like `training` or `venv`
-Ensure the Python version is 3.5 (if it is not the default) by running `virtualenv <dir> --python=python3.5` or similar. 
-#### Activate the virtualenv 
-
-```
-**Windows**
-<virtualenv_dir>/Scripts/activate.bat
-
-**Unix**
-source <virtualenv_dir>/bin/activate
-``` 
-At this point you can check the Python version by running `python --version`. 
-#### Install the requirements 
-
-```
-cd <dir>
-pip install -r requirements.txt 
-```
-Ubuntu-based users may also need to run `sudo apt install libpq-dev python3-dev`
-#### Run the server 
-```
-python manage.py runserver 
-``` 
-Pages can be browsed locally at http://localhost:8000/
-
-### Sass
-Install npm with
-```
+```bash
+# npm
 npm install
-```
-And then use either 
-```
-npm run css_compile
-```
-to compile, or
-```
-npm run css_watch
-```
-to recompile after every save of a Sass file.
 
-# Help 
+# pnpm
+pnpm install
 
-The [Django documentation](https://docs.djangoproject.com/en/1.11/) is a good place to start, or just drop us an email - [it@newtheatre.org.uk](mailto:it@newtheatre.org.uk)
+# yarn
+yarn install
+
+# bun
+bun install
+```
+
+## Development Server
+
+Start the development server on `http://localhost:3000`:
+
+```bash
+# npm
+npm run dev
+
+# pnpm
+pnpm dev
+
+# yarn
+yarn dev
+
+# bun
+bun run dev
+```
+
+## Production
+
+Build the application for production:
+
+```bash
+# npm
+npm run build
+
+# pnpm
+pnpm build
+
+# yarn
+yarn build
+
+# bun
+bun run build
+```
+
+Locally preview production build:
+
+```bash
+# npm
+npm run preview
+
+# pnpm
+pnpm preview
+
+# yarn
+yarn preview
+
+# bun
+bun run preview
+```
+
+Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
