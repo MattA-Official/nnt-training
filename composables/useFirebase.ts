@@ -72,7 +72,15 @@ export const useFirebase = () => {
     }
 
     const loginUser = async (email: string, password: string) => {
-        return await signInWithEmailAndPassword(auth, email, password)
+        const { user } = await signInWithEmailAndPassword(auth, email, password)
+
+        // update last login time
+        const userRef = doc(db, 'users', user.uid)
+        await updateDoc(userRef, {
+            'metadata.lastLoginAt': new Date()
+        })
+
+        return user
     }
 
     const logoutUser = async () => {
