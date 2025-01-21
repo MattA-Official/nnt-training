@@ -1,15 +1,15 @@
+import { useFirebaseAuth, useFirestore } from 'vuefire'
 import {
-    getAuth,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     signOut
 } from 'firebase/auth'
-import { getFirestore, doc, setDoc, query, collection, where, getDocs, updateDoc } from 'firebase/firestore'
+import { doc, setDoc, query, collection, where, getDocs, updateDoc } from 'firebase/firestore'
 import type { UserProfile } from '~/types'
 
 export const useFirebase = () => {
-    const auth = getAuth()
-    const db = getFirestore()
+    const auth = useFirebaseAuth()!
+    const db = useFirestore()
 
     const generateUniqueSlug = async (baseSlug: string): Promise<string> => {
         console.log('Generating unique slug from:', baseSlug)
@@ -72,14 +72,7 @@ export const useFirebase = () => {
     }
 
     const loginUser = async (email: string, password: string) => {
-        const result = await signInWithEmailAndPassword(auth, email, password)
-
-        // Update lastLoginAt in Firestore
-        await updateDoc(doc(db, 'users', result.user.uid), {
-            'metadata.lastLoginAt': new Date()
-        })
-
-        return result
+        return await signInWithEmailAndPassword(auth, email, password)
     }
 
     const logoutUser = async () => {

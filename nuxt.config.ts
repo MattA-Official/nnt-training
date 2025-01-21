@@ -13,7 +13,10 @@ export default defineNuxtConfig({
       messagingSenderId: "560599823624",
       appId: "1:560599823624:web:0a61c02269e3e39f65e8bd"
     },
-
+    auth: {
+      enabled: true,
+      sessionCookie: true,
+    }
   },
 
   nitro: {

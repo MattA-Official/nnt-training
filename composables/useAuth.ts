@@ -1,11 +1,10 @@
+import { useCurrentUser, useFirestore } from 'vuefire'
 import { doc, onSnapshot } from 'firebase/firestore'
-import type { User } from 'firebase/auth'
 import type { UserProfile } from '~/types'
 
 export const useAuth = () => {
-    const { auth, db } = useFirebase()
-
-    const user = useState<User | null>('user', () => null)
+    const user = useCurrentUser()
+    const db = useFirestore()
     const userProfile = useState<UserProfile | null>('userProfile', () => null)
     const loading = useState<boolean>('loading', () => true)
 
@@ -15,14 +14,14 @@ export const useAuth = () => {
 
     // Watch auth state changes
     if (!subscribed.value) {
-        console.log('Setting up auth state listener')
+        console.log('Setting up auth state watcher')
         subscribed.value = true
-        const unsubAuth = auth.onAuthStateChanged(async (newUser) => {
+
+        watch(user, (newUser) => {
             console.log('Auth state changed:', newUser ? 'User logged in' : 'User logged out')
-            user.value = newUser
             loading.value = false
 
-            // Cleanup previous profile subscription if it exists
+            // Cleanup previous profile subscription
             if (unsubProfile) {
                 console.log('Cleaning up previous profile subscription')
                 unsubProfile()
@@ -41,11 +40,10 @@ export const useAuth = () => {
             } else {
                 userProfile.value = null
             }
-        })
+        }, { immediate: true })
 
         // Cleanup on component unmount
         onUnmounted(() => {
-            unsubAuth()
             if (unsubProfile) {
                 unsubProfile()
             }
