@@ -14,15 +14,6 @@
     </BaseForm>
 
     <pre>{{ JSON.stringify(formData, null, 2) }}</pre>
-
-    <div v-if="!user">
-        <a href="/auth/login">Login</a>
-        <br />
-        <a href="/auth/register">Register</a>
-    </div>
-    <div v-else>
-        <button @click="handleLogout">Logout</button>
-    </div>
 </template>
 
 <script setup lang="ts">
@@ -34,10 +25,6 @@ import BaseForm from '~/components/form/templates/BaseForm.vue';
 
 const formData = ref({}) // Fix: Initialize as empty object, not string
 
-const { user } = useAuth()
-const { logoutUser } = useFirebase()
-const router = useRouter()
-
 const handleSubmit = (data: any) => {
     console.log('Form submitted with data:', data)
     formData.value = data // Add this line to update the displayed data
@@ -45,14 +32,5 @@ const handleSubmit = (data: any) => {
 
 const handleCancel = () => {
     console.log('Form cancelled')
-}
-
-const handleLogout = async () => {
-    try {
-        await logoutUser()
-        router.push('/auth/login')
-    } catch (error: any) {
-        console.error('Logout error:', error.message)
-    }
 }
 </script>
