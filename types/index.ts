@@ -20,7 +20,7 @@ export interface UserProfile {
     metadata: {
         createdAt: Date
         lastLoginAt: Date
-        lastUpdatedAt: Date
+        lastUpdatedAt?: Date
     }
 }
 
@@ -39,6 +39,8 @@ export interface Department {
         createdAt: Date
         createdBy: string
         isActive: boolean
+        lastUpdatedAt?: Date
+        lastUpdatedBy?: string
     }
 }
 
@@ -54,6 +56,8 @@ export interface Category {
         createdAt: Date
         createdBy: string
         isActive: boolean
+        lastUpdatedAt?: Date
+        lastUpdatedBy?: string
     }
 }
 
@@ -65,6 +69,7 @@ export interface Module {
     description: string
     slug: string
     order: number
+    safety: boolean
     requirements?: {
         prerequisites?: string[]
         equipment?: string[]
@@ -74,7 +79,8 @@ export interface Module {
         createdAt: Date
         createdBy: string
         isActive: boolean
-        lastUpdatedAt: Date
+        lastUpdatedAt?: Date
+        lastUpdatedBy?: string
     }
 }
 
@@ -108,7 +114,8 @@ export interface Session {
     metadata: {
         createdAt: Date
         createdBy: string
-        lastUpdatedAt: Date
+        lastUpdatedAt?: Date
+        lastUpdatedBy?: string
     }
 }
 
@@ -130,7 +137,9 @@ export interface Progress {
     }
     metadata: {
         createdAt: Date
-        lastUpdatedAt: Date
+        createdBy: string
+        lastUpdatedAt?: Date
+        lastUpdatedBy?: string
     }
 }
 
@@ -152,3 +161,24 @@ export interface ProgressData {
     inProgress: number
     notStarted: number
 }
+
+// Form Types (for validation and submission)
+export type CreateUserProfileForm = Omit<UserProfile, 'uid' | 'metadata'>
+
+export type CreateDepartmentForm = Omit<Department, 'id' | 'metadata'>
+
+export type CreateCategoryForm = Omit<Category, 'id' | 'metadata'>
+
+export type CreateModuleForm = Omit<Module, 'id' | 'metadata'>
+
+export type CreateSessionForm = Omit<Session, 'id' | 'metadata' | 'status' | 'capacity.current'>
+
+export type UpdateUserProfileForm = Partial<CreateUserProfileForm>
+
+export type UpdateDepartmentForm = Partial<CreateDepartmentForm>
+
+export type UpdateCategoryForm = Partial<CreateCategoryForm>
+
+export type UpdateModuleForm = Partial<CreateModuleForm>
+
+export type UpdateSessionForm = Partial<CreateSessionForm>
