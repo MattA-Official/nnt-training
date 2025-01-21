@@ -40,7 +40,7 @@ provide('groupPath', currentGroupPath.value)
 .form-group {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
 }
 

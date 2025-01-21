@@ -1,10 +1,20 @@
 <script setup lang="ts">
 import FormGroup from './FormGroup.vue';
 
+defineProps({
+    name: {
+        type: String,
+        default: null
+    },
+    outline: {
+        type: Boolean,
+        default: false
+    }
+})
 </script>
 
 <template>
-    <FormGroup type="row">
+    <FormGroup :name="name" type="row" :outline="outline">
         <slot></slot>
     </FormGroup>
 </template>
