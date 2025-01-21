@@ -1,8 +1,8 @@
 <template>
-    <form @submit.prevent="handleSubmit" class="base-form">
+    <form @submit.prevent="handleSubmit" ref="formRef" class="base-form">
         <slot></slot>
         <FormButtonGroup v-if="showActions">
-            <FormSubmit :disabled="loading" @submit="handleSubmit">
+            <FormSubmit :disabled="loading || isSubmitting" @submit.prevent="handleSubmit">
                 {{ submitLabel }}
             </FormSubmit>
             <FormCancel v-if="showCancel" @cancel="handleCancel">
@@ -103,11 +103,35 @@ defineProps({
     }
 })
 
-const emit = defineEmits(['submit', 'cancel'])
+const emit = defineEmits<{
+    submit: [data: any]
+    cancel: []
+}>()
 
-const handleSubmit = () => {
-    updateFormData() // Ensure latest data
-    emit('submit', formData.value)
+const formRef = ref<HTMLFormElement | null>(null)
+const isSubmitting = ref(false)
+
+const handleSubmit = async (event: Event) => {
+    if (isSubmitting.value) {
+        console.log('Form submission prevented - already submitting')
+        return
+    }
+
+    console.log('Form submission started')
+    isSubmitting.value = true
+
+    try {
+        // Use formData object directly instead of flattening
+        const data = flattenFormStructure(formStructure.value)
+        console.log('Collected form data:', data)
+
+        await emit('submit', data)
+    } catch (error) {
+        console.error('Form submission error:', error)
+    } finally {
+        isSubmitting.value = false
+        console.log('Form submission completed')
+    }
 }
 
 const handleCancel = () => {
