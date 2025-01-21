@@ -1,33 +1,27 @@
-import { useFirestore } from 'vuefire'
-import { useAuth } from '~/composables/useAuth'
-import { collection, getDocs } from 'firebase/firestore'
 import type { Department } from '~/types'
 
 export default defineEventHandler(async (event) => {
-    const { userProfile } = useAuth()
-    const db = useFirestore()
+    const db: FirebaseFirestore.Firestore = event.context.db
+    const user = event.context.user
 
-    // Verify authentication
-    if (!userProfile.value) {
+    // If there is no user return 401
+    if (!user) {
         throw createError({
             statusCode: 401,
             message: 'Unauthorized'
         })
     }
 
-    try {
-        const querySnapshot = await getDocs(collection(db, 'departments'))
-        const departments: Department[] = []
+    // Get the departments
+    const departments = await getDepartments(db)
 
-        querySnapshot.forEach((doc) => {
-            departments.push({ id: doc.id, ...doc.data() } as Department)
-        })
-
-        return departments
-    } catch (error: any) {
-        throw createError({
-            statusCode: 500,
-            message: error.message
-        })
-    }
+    return departments
 })
+
+// method to get departments
+const getDepartments = async (db: FirebaseFirestore.Firestore): Promise<Department[]> => {
+    const departmentsRef = db.collection('departments')
+    const departments = await departmentsRef.get()
+
+    return departments.docs.map(doc => doc.data() as Department)
+}

@@ -3,7 +3,7 @@ import type { Department } from '~/types'
 export default defineEventHandler(async (event) => {
     const db: FirebaseFirestore.Firestore = event.context.db
     const user = event.context.user
-    const body = await readBody(event)
+    const id = getRouterParam(event, 'id')
 
     // If there is no user return 401
     if (!user) {
@@ -14,15 +14,15 @@ export default defineEventHandler(async (event) => {
     }
 
     // Get the department
-    const department = await getDepartment(db, body, user.id)
+    const department = await getDepartment(db, id)
 
     return department
 })
 
 // method to get a department
-const getDepartment = async (db: FirebaseFirestore.Firestore, body: any, userId: string): Promise<Department> => {
+const getDepartment = async (db: FirebaseFirestore.Firestore, id: any): Promise<Department> => {
     const departmentsRef = db.collection('departments')
-    const departmentRef = departmentsRef.doc(body.id)
+    const departmentRef = departmentsRef.doc(id)
 
     // TODO: Return error if department does not exist
 
