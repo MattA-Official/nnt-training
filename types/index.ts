@@ -65,11 +65,10 @@ export interface Module {
     description: string
     slug: string
     order: number
-    requirements: {
-        prerequisites: string[]
-        equipment: string[]
-        minTrainees: number
-        maxTrainees: number
+    requirements?: {
+        prerequisites?: string[]
+        equipment?: string[]
+        knowledge?: string[]
     }
     metadata: {
         createdAt: Date
