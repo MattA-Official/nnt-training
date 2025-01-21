@@ -27,6 +27,7 @@ export default defineEventHandler(async (event) => {
             description: body.description,
             categoryId: body.categoryId,
             order: body.order,
+            safety: body.safety || false,
             requirements: body.requirements || null,
             metadata: {
                 createdAt: new Date(),

@@ -13,9 +13,9 @@ const router = useRouter()
 
 // Redirect if not admin
 // TODO: move to middleware
-if (!userProfile.value?.roles.admin) {
-    router.push('/training/departments')
-}
+// if (!userProfile.value?.roles.admin) {
+//     router.push('/training/departments')
+// }
 
 const department = ref<Department>({
     id: '',
