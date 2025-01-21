@@ -29,5 +29,13 @@ export default defineEventHandler(async (event) => {
         message: 'Internal server error during Firebase initialization'
       })
     }
+  } else if (app) {
+    event.context.auth = getAuth(app)
+    event.context.db = getFirestore(app)
+  } else {
+    throw createError({
+      statusCode: 500,
+      message: 'Internal server error during Firebase initialization'
+    })
   }
 })
