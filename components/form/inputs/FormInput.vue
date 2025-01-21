@@ -65,6 +65,15 @@ const props = defineProps({
     error: { // TODO: display error message
         type: String,
         default: null
+    },
+    type: {
+        type: String,
+        default: 'text',
+        validator: (value: string) => ['text', 'email', 'password', 'number'].includes(value)
+    },
+    pattern: {
+        type: String,
+        default: null
     }
 })
 

@@ -1,24 +1,37 @@
-import { useFirestore } from 'vuefire'
-import { useAuth } from '~/composables/useAuth'
-import { collection, doc, setDoc } from 'firebase/firestore'
 import type { Department } from '~/types'
+import { serverFirestore, serverAuth } from '~/utils/firebase-admin'
 
 export default defineEventHandler(async (event) => {
-    const { userProfile } = useAuth()
-    const db = useFirestore()
+    const db = await serverFirestore()
+    const auth = await serverAuth()
     const body = await readBody(event)
 
-    // Verify authentication and admin role
-    if (!userProfile.value?.roles.admin) {
+    // Get session cookie
+    const sessionCookie = getCookie(event, '__session')
+    if (!sessionCookie) {
         throw createError({
-            statusCode: 403,
-            message: 'Admin access required'
+            statusCode: 401,
+            message: 'Unauthorized'
         })
     }
 
+    // Verify session
     try {
-        const departmentsRef = collection(db, 'departments')
-        const newDepartmentRef = doc(departmentsRef)
+        const decodedClaims = await auth.verifySessionCookie(sessionCookie)
+        const userDoc = await db.collection('users').doc(decodedClaims.uid).get()
+        const userData = userDoc.data()
+
+        console.log('User:', userData)
+
+        if (!userData?.roles?.admin) {
+            throw createError({
+                statusCode: 403,
+                message: 'Admin access required'
+            })
+        }
+
+        const departmentsRef = db.collection('departments')
+        const newDepartmentRef = departmentsRef.doc()
 
         const department: Department = {
             id: newDepartmentRef.id,
@@ -29,16 +42,16 @@ export default defineEventHandler(async (event) => {
             contact: body.contact,
             metadata: {
                 createdAt: new Date(),
-                createdBy: userProfile.value.uid,
+                createdBy: decodedClaims.uid,
                 isActive: true
             }
         }
 
-        await setDoc(newDepartmentRef, department)
+        await newDepartmentRef.set(department)
         return department
     } catch (error: any) {
         throw createError({
-            statusCode: 500,
+            statusCode: error.code === 'auth/session-cookie-expired' ? 401 : error.statusCode || 500,
             message: error.message
         })
     }
