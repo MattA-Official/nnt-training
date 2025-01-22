@@ -1,61 +1,27 @@
+<script setup lang="ts">
+import DepartmentHeader from '~/components/departments/DepartmentHeader.vue';
+import DepartmentList from '~/components/departments/DepartmentList.vue';
+
+const { data: departments } = await useFetch('/api/departments', {
+    transform: (departments) => departments.map(dept => ({
+        ...dept,
+        metadata: {
+            ...dept.metadata,
+            createdAt: new Date(dept.metadata.createdAt),
+            lastUpdatedAt: dept.metadata.lastUpdatedAt ? new Date(dept.metadata.lastUpdatedAt) : undefined
+        }
+    }))
+})
+</script>
+
 <template>
     <div class="container">
-        <h1>Departments</h1>
-        <div class="departments-list">
-            <div v-for="dept in departments" :key="dept.id" class="department-item">
-                <span>{{ dept.name }}</span>
-                <div class="group">
-                    <a :href="'/training/departments/' + dept.slug">
-                        View
-                    </a>
-                    <a :href="'/training/departments/' + dept.slug + '/edit'">
-                        Edit
-                    </a>
-                </div>
-            </div>
-        </div>
-        <a href="/training/departments/new">Create Department</a>
+        <DepartmentHeader title="Departments" description="Manage training departments">
+            <NuxtLink to="/training/departments/new" class="">Create Department</NuxtLink>
+        </DepartmentHeader>
+
+        <DepartmentList :departments="departments || []" />
     </div>
 </template>
 
-<script setup lang="ts">
-const { data: departments } = await useFetch('/api/departments')
-</script>
-
-<style scoped>
-.departments-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.department-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 0.25rem;
-}
-
-.button-group {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.btn {
-    padding: 0.5rem 1rem;
-    color: white;
-    border: none;
-    border-radius: 0.25rem;
-    cursor: pointer;
-}
-
-.btn-view {
-    background-color: #3b82f6;
-}
-
-.btn-edit {
-    background-color: #22c55e;
-}
-</style>
+<style scoped></style>

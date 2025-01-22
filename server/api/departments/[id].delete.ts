@@ -1,5 +1,6 @@
 import type { Department, UserProfile } from '~/types'
 
+// TODO: add the ability to completely delete a department including references to it
 export default defineEventHandler(async (event) => {
     const db: FirebaseFirestore.Firestore = event.context.db
     const user: UserProfile = event.context.user
