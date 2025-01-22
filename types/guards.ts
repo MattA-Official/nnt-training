@@ -18,7 +18,7 @@ import type {
     UpdateSessionForm
 } from "."
 
-export function isUserProfile(obj: any): obj is UserProfile {
+export const isUserProfile = (obj: any): obj is UserProfile => {
     return (
         typeof obj === 'object' &&
         typeof obj.uid === 'string' &&
@@ -35,7 +35,7 @@ export function isUserProfile(obj: any): obj is UserProfile {
     )
 }
 
-export function isDepartment(obj: any): obj is Department {
+export const isDepartment = (obj: any): obj is Department => {
     return (
         typeof obj === 'object' &&
         typeof obj.id === 'string' &&
@@ -53,7 +53,7 @@ export function isDepartment(obj: any): obj is Department {
     )
 }
 
-export function isCategory(obj: any): obj is Category {
+export const isCategory = (obj: any): obj is Category => {
     return (
         typeof obj === 'object' &&
         typeof obj.id === 'string' &&
@@ -69,7 +69,7 @@ export function isCategory(obj: any): obj is Category {
     )
 }
 
-export function isModule(obj: any): obj is Module {
+export const isModule = (obj: any): obj is Module => {
     return (
         typeof obj === 'object' &&
         typeof obj.id === 'string' &&
@@ -86,11 +86,11 @@ export function isModule(obj: any): obj is Module {
     )
 }
 
-export function isSessionStatus(status: any): status is SessionStatus {
+export const isSessionStatus = (status: any): status is SessionStatus => {
     return ['scheduled', 'in-progress', 'completed', 'cancelled'].includes(status)
 }
 
-export function isSession(obj: any): obj is Session {
+export const isSession = (obj: any): obj is Session => {
     return (
         typeof obj === 'object' &&
         typeof obj.id === 'string' &&
@@ -112,7 +112,7 @@ export function isSession(obj: any): obj is Session {
     )
 }
 
-export function isProgress(obj: any): obj is Progress {
+export const isProgress = (obj: any): obj is Progress => {
     return (
         typeof obj === 'object' &&
         typeof obj.moduleId === 'string' &&
@@ -124,7 +124,7 @@ export function isProgress(obj: any): obj is Progress {
     )
 }
 
-export function isCreateUserProfileForm(obj: any): obj is CreateUserProfileForm {
+export const isCreateUserProfileForm = (obj: any): obj is CreateUserProfileForm => {
     return (
         typeof obj === 'object' &&
         typeof obj.displayName === 'string' &&
@@ -137,7 +137,7 @@ export function isCreateUserProfileForm(obj: any): obj is CreateUserProfileForm 
     )
 }
 
-export function isCreateDepartmentForm(obj: any): obj is CreateDepartmentForm {
+export const isCreateDepartmentForm = (obj: any): obj is CreateDepartmentForm => {
     return (
         typeof obj === 'object' &&
         typeof obj.name === 'string' &&
@@ -150,7 +150,7 @@ export function isCreateDepartmentForm(obj: any): obj is CreateDepartmentForm {
     )
 }
 
-export function isCreateCategoryForm(obj: any): obj is CreateCategoryForm {
+export const isCreateCategoryForm = (obj: any): obj is CreateCategoryForm => {
     return (
         typeof obj === 'object' &&
         typeof obj.departmentId === 'string' &&
@@ -161,7 +161,7 @@ export function isCreateCategoryForm(obj: any): obj is CreateCategoryForm {
     )
 }
 
-export function isCreateModuleForm(obj: any): obj is CreateModuleForm {
+export const isCreateModuleForm = (obj: any): obj is CreateModuleForm => {
     return (
         typeof obj === 'object' &&
         typeof obj.categoryId === 'string' &&
@@ -173,7 +173,7 @@ export function isCreateModuleForm(obj: any): obj is CreateModuleForm {
     )
 }
 
-export function isCreateSessionForm(obj: any): obj is CreateSessionForm {
+export const isCreateSessionForm = (obj: any): obj is CreateSessionForm => {
     return (
         typeof obj === 'object' &&
         typeof obj.moduleId === 'string' &&
@@ -188,7 +188,7 @@ export function isCreateSessionForm(obj: any): obj is CreateSessionForm {
     )
 }
 
-export function isUpdateUserProfileForm(obj: any): obj is UpdateUserProfileForm {
+export const isUpdateUserProfileForm = (obj: any): obj is UpdateUserProfileForm => {
     if (typeof obj !== 'object' || obj === null) return false
     const keys = Object.keys(obj)
     return keys.every(key => {
@@ -209,7 +209,7 @@ export function isUpdateUserProfileForm(obj: any): obj is UpdateUserProfileForm 
     })
 }
 
-export function isUpdateDepartmentForm(obj: any): obj is UpdateDepartmentForm {
+export const isUpdateDepartmentForm = (obj: any): obj is UpdateDepartmentForm => {
     if (typeof obj !== 'object' || obj === null) return false
     const keys = Object.keys(obj)
     return keys.every(key => {
@@ -229,7 +229,7 @@ export function isUpdateDepartmentForm(obj: any): obj is UpdateDepartmentForm {
     })
 }
 
-export function isUpdateCategoryForm(obj: any): obj is UpdateCategoryForm {
+export const isUpdateCategoryForm = (obj: any): obj is UpdateCategoryForm => {
     if (typeof obj !== 'object' || obj === null) return false
     const keys = Object.keys(obj)
     return keys.every(key => {
@@ -247,7 +247,7 @@ export function isUpdateCategoryForm(obj: any): obj is UpdateCategoryForm {
     })
 }
 
-export function isUpdateModuleForm(obj: any): obj is UpdateModuleForm {
+export const isUpdateModuleForm = (obj: any): obj is UpdateModuleForm => {
     if (typeof obj !== 'object' || obj === null) return false
     const keys = Object.keys(obj)
     return keys.every(key => {
@@ -269,7 +269,7 @@ export function isUpdateModuleForm(obj: any): obj is UpdateModuleForm {
     })
 }
 
-export function isUpdateSessionForm(obj: any): obj is UpdateSessionForm {
+export const isUpdateSessionForm = (obj: any): obj is UpdateSessionForm => {
     if (typeof obj !== 'object' || obj === null) return false
     const keys = Object.keys(obj)
     return keys.every(key => {
