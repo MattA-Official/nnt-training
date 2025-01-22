@@ -1,9 +1,9 @@
-import type { Department } from '~/types'
+import type { Department, UserProfile } from '~/types'
 
 export default defineEventHandler(async (event) => {
     const db: FirebaseFirestore.Firestore = event.context.db
-    const user = event.context.user
-    const body = await readBody(event)
+    const user: UserProfile = event.context.user
+    const id = getRouterParam(event, 'id')
 
     // If there is no user return 401
     if (!user) {
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // If the user is not an admin return 403
-    if (!user.isAdmin) {
+    if (!user.roles.admin) {
         throw createError({
             statusCode: 403,
             message: 'Forbidden'
@@ -22,21 +22,32 @@ export default defineEventHandler(async (event) => {
     }
 
     // Soft Delete the department
-    const department = await softDeleteDepartment(db, body, user.id)
+    const department = await softDeleteDepartment(db, id, user.uid).catch((error) => {
+        throw createError({
+            statusCode: error.statusCode,
+            message: error.message
+        })
+    })
 
     return department
 })
 
 // method to soft delete a department
-const softDeleteDepartment = async (db: FirebaseFirestore.Firestore, body: any, userId: string): Promise<Department> => {
+const softDeleteDepartment = async (db: FirebaseFirestore.Firestore, id: any, userId: string): Promise<Department> => {
     const departmentsRef = db.collection('departments')
-    const departmentRef = departmentsRef.doc(body.id)
+    const departmentRef = departmentsRef.doc(id)
 
-    // TODO: Return error if department does not exist
-    // TODO: consider returning the entire department object or a boolean?
+    const departmentDoc = await departmentRef.get()
+
+    if (!departmentDoc.exists) {
+        throw createError({
+            statusCode: 404,
+            message: 'Department not found'
+        })
+    }
 
     const department = {
-        ...body,
+        ...departmentDoc.data(),
         metadata: {
             lastUpdatedAt: new Date(),
             lastUpdatedBy: userId,
@@ -45,6 +56,6 @@ const softDeleteDepartment = async (db: FirebaseFirestore.Firestore, body: any, 
     }
 
     await departmentRef.update(department)
-    return department
+    return department as Department
 }
 

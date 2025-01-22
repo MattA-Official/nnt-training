@@ -1,6 +1,7 @@
 <template>
-    <div v-if="error">
+    <div v-if="error || !data" class="">
         <!-- <ErrorDisplay :error="error" /> -->
+        <p v-if="error">An error occurred: {{ error.message }}</p>
     </div>
     <div v-else class="">
         <h1 class="">{{ data.name }}</h1>

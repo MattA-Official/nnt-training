@@ -1,8 +1,8 @@
-import type { Department } from '~/types'
+import type { Department, UserProfile } from '~/types'
 
 export default defineEventHandler(async (event) => {
     const db: FirebaseFirestore.Firestore = event.context.db
-    const user = event.context.user
+    const user: UserProfile = event.context.user
     const id = getRouterParam(event, 'id')
 
     // If there is no user return 401
@@ -14,7 +14,20 @@ export default defineEventHandler(async (event) => {
     }
 
     // Get the department
-    const department = await getDepartment(db, id)
+    const department = await getDepartment(db, id).catch((error) => {
+        throw createError({
+            statusCode: error.statusCode,
+            message: error.message
+        })
+    })
+
+    // if the user is not an admin and the department is not active return 403
+    if (!user.roles.admin && !department.metadata.isActive) {
+        throw createError({
+            statusCode: 403,
+            message: 'Forbidden'
+        })
+    }
 
     return department
 })
@@ -24,8 +37,14 @@ const getDepartment = async (db: FirebaseFirestore.Firestore, id: any): Promise<
     const departmentsRef = db.collection('departments')
     const departmentRef = departmentsRef.doc(id)
 
-    // TODO: Return error if department does not exist
-
     const department = await departmentRef.get()
-    return department.data()
+
+    if (!department.exists) {
+        throw createError({
+            statusCode: 404,
+            message: 'Department not found'
+        })
+    }
+
+    return department.data() as Department
 }

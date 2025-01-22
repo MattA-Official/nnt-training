@@ -1,11 +1,11 @@
-import type { Department } from '~/types'
+import type { Department, UserProfile } from '~/types'
 
 // Allow the user to find a department by slug
 // TODO: add more options for finding a department
 
 export default defineEventHandler(async (event) => {
     const db: FirebaseFirestore.Firestore = event.context.db
-    const user = event.context.user
+    const user: UserProfile = event.context.user
     const { slug } = getQuery(event)
 
     // If there is no user return 401

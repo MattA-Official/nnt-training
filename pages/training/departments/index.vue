@@ -14,6 +14,7 @@
                 </div>
             </div>
         </div>
+        <a href="/training/departments/new">Create Department</a>
     </div>
 </template>
 

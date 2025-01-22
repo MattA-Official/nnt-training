@@ -1,8 +1,8 @@
-import type { Department } from '~/types'
+import type { Department, UserProfile } from '~/types'
 
 export default defineEventHandler(async (event) => {
     const db: FirebaseFirestore.Firestore = event.context.db
-    const user = event.context.user
+    const user: UserProfile = event.context.user
 
     // If there is no user return 401
     if (!user) {
