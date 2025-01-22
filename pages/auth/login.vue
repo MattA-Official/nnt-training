@@ -10,5 +10,6 @@ definePageMeta({
     <div>
         <h1>Login</h1>
         <LoginForm />
+        <p>Don't have an account? <a href="/auth/register">Register</a></p>
     </div>
 </template>
