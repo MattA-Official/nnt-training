@@ -1,27 +1,54 @@
-// User and Auth Types
+// Base Types
+export interface BaseMetadata {
+    createdAt: Date
+    createdBy: string
+    lastUpdatedAt?: Date
+    lastUpdatedBy?: string
+    isActive: boolean
+}
+
+// User & Auth Types
+export type UserStatus = 'student' | 'alumni' | 'staff' | 'unknown'
+
+export interface CommitteeInfo {
+    departmentId?: string
+    role: string
+}
+
+export interface UserRoles {
+    admin: boolean
+    trainer: boolean
+    committee?: CommitteeInfo
+}
+
 export interface UserProfile {
     uid: string
     displayName: string
     email: string
     slug: string
-    roles: {
-        trainer: boolean
-        admin: boolean
-        committee?: {
-            departmentId?: string
-            role?: string
+    status: UserStatus
+    gradYear: number | null
+    course?: string
+    studentId?: string
+    roles: UserRoles
+    profile: {
+        photoURL: string | null
+        bio: string | null
+        contactNumber: string | null
+        socialLinks?: {
+            facebook?: string
+        }
+        preferences?: {
+            emailNotifications: boolean
+            pushNotifications: boolean
+            language: string
         }
     }
-    profile: {
-        photoURL?: string
-        bio?: string
-        contactNumber?: string
-    }
-    metadata: {
-        createdAt: Date
+    metadata: BaseMetadata & {
         lastLoginAt: Date
-        lastUpdatedAt?: Date
+        verifiedAt?: Date
     }
+    progress?: TrainingProgress[]
 }
 
 // Department Types
@@ -35,13 +62,7 @@ export interface Department {
         email: string
         userId: string
     }
-    metadata: {
-        createdAt: Date
-        createdBy: string
-        isActive: boolean
-        lastUpdatedAt?: Date
-        lastUpdatedBy?: string
-    }
+    metadata: BaseMetadata
 }
 
 // Category Types
@@ -52,13 +73,7 @@ export interface Category {
     description: string
     slug: string
     order: number
-    metadata: {
-        createdAt: Date
-        createdBy: string
-        isActive: boolean
-        lastUpdatedAt?: Date
-        lastUpdatedBy?: string
-    }
+    metadata: BaseMetadata
 }
 
 // Module Types
@@ -75,21 +90,19 @@ export interface Module {
         equipment?: string[]
         knowledge?: string[]
     }
-    metadata: {
-        createdAt: Date
-        createdBy: string
-        isActive: boolean
-        lastUpdatedAt?: Date
-        lastUpdatedBy?: string
-    }
+    metadata: BaseMetadata
 }
 
 // Session Types
 export type SessionStatus = 'scheduled' | 'in-progress' | 'completed' | 'cancelled'
+export type AttendanceStatus = 'registered' | 'attended' | 'completed' | 'no-show'
 
 export interface Session {
     id: string
-    moduleId: string
+    modules: Array<{
+        moduleId: string
+        name: string
+    }>
     date: Date
     status: SessionStatus
     trainer: {
@@ -99,86 +112,39 @@ export interface Session {
     trainees: Array<{
         uid: string
         name: string
-        status: 'registered' | 'attended' | 'completed' | 'no-show'
-        completedAt?: Date
+        status: AttendanceStatus
+        completedAt?: Date | null
     }>
-    capacity: {
-        min: number
-        max: number
-        current: number
-    }
+    capacity: number
     notes: {
-        public?: string
-        private?: string
+        public: string | null
+        private: string | null
     }
-    metadata: {
-        createdAt: Date
-        createdBy: string
-        lastUpdatedAt?: Date
-        lastUpdatedBy?: string
-    }
+    metadata: BaseMetadata
 }
 
 // Progress Types
-export interface Progress {
-    moduleId: string
-    status: 'not-started' | 'in-progress' | 'completed'
-    sessions: Array<{
-        sessionId: string
-        date: Date
-        trainerId: string
-        status: 'attended' | 'completed'
-        notes?: string
-    }>
-    completedAt?: Date
-    certifiedBy?: {
-        uid: string
-        name: string
-    }
-    metadata: {
-        createdAt: Date
-        createdBy: string
-        lastUpdatedAt?: Date
-        lastUpdatedBy?: string
-    }
+export interface TrainingProgress {
+    module: Module
+    status: 'completed' | 'expired' // Computed based on expiry date
+    completedAt: Date
+    expiresAt: Date
+    completedAs: 'trainee' | 'trainer'
+    trainer: Partial<UserProfile>
+    traineesCount?: number
+    lastTrainingDelivered?: Date
 }
 
-// Component Prop Types
-export interface BreadcrumbItem {
-    label: string
-    to?: string
-}
+// Form Types
+export type WithoutMetadata<T> = Omit<T, 'metadata'>
+export type WithoutId<T> = Omit<T, 'id'>
+export type CreateForm<T> = WithoutMetadata<WithoutId<T>>
+export type UpdateForm<T> = Partial<CreateForm<T>>
 
-export interface SelectOption {
-    value: string | number
-    label: string
-    disabled?: boolean
-}
-
-export interface ProgressData {
-    total: number
-    completed: number
-    inProgress: number
-    notStarted: number
-}
-
-// Form Types (for validation and submission)
-export type CreateUserProfileForm = Omit<UserProfile, 'uid' | 'metadata'>
-
-export type CreateDepartmentForm = Omit<Department, 'id' | 'metadata'>
-
-export type CreateCategoryForm = Omit<Category, 'id' | 'metadata'>
-
-export type CreateModuleForm = Omit<Module, 'id' | 'metadata'>
-
-export type CreateSessionForm = Omit<Session, 'id' | 'metadata' | 'status' | 'capacity.current'>
+export type CreateUserProfileForm = Omit<UserProfile, 'uid' | 'metadata' | 'roles'>
 
 export type UpdateUserProfileForm = Partial<CreateUserProfileForm>
-
-export type UpdateDepartmentForm = Partial<CreateDepartmentForm>
-
-export type UpdateCategoryForm = Partial<CreateCategoryForm>
-
-export type UpdateModuleForm = Partial<CreateModuleForm>
-
-export type UpdateSessionForm = Partial<CreateSessionForm>
+export type CreateDepartmentForm = CreateForm<Department>
+export type CreateCategoryForm = CreateForm<Category>
+export type CreateModuleForm = CreateForm<Module>
+export type CreateSessionForm = CreateForm<Session>

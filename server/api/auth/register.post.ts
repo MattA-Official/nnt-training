@@ -1,1 +1,0 @@
-// TODO: change auth to use server routes instead of client-side Firebase SDK (low priority)
