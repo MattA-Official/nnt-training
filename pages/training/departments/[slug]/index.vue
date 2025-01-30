@@ -22,11 +22,13 @@
 </template>
 
 <script setup lang="ts">
+import type { Department } from '~/types';
+
 const route = useRoute()
 const { userProfile } = useAuth()
 
-const { data, error } = await useFetch(`/api/departments/find?slug=${route.params.slug}`, {
-    transform: (data) => ({
+const { data, error } = await useFetch(`/api/departments/${route.params.slug}`, {
+    transform: (data: Department) => ({
         ...data,
         metadata: {
             ...data.metadata,
