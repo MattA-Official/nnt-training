@@ -1,9 +1,12 @@
 import type { Module, UserProfile } from '~/types'
 
+// Allow the user to find a module by slug
+// TODO: add more options for finding a module
+
 export default defineEventHandler(async (event) => {
     const db: FirebaseFirestore.Firestore = event.context.db
     const user: UserProfile = event.context.user
-    const id = getRouterParam(event, 'id')
+    const { slug } = getQuery(event)
 
     // If there is no user return 401
     if (!user) {
@@ -13,38 +16,38 @@ export default defineEventHandler(async (event) => {
         })
     }
 
+    // If there is no slug return 400
+    if (!slug) {
+        throw createError({
+            statusCode: 400,
+            message: 'Bad Request'
+        })
+    }
+
     // Get the module
-    const module = await getModule(db, id).catch((error) => {
+    const module = await findModule(db, slug).catch((error) => {
         throw createError({
             statusCode: error.statusCode,
             message: error.message
         })
     })
 
-    // if the user is not an admin and the module is not active return 403
-    if (!user.roles.admin && !module.metadata.isActive) {
-        throw createError({
-            statusCode: 403,
-            message: 'Forbidden'
-        })
-    }
-
     return module
 })
 
-// method to get a module
-const getModule = async (db: FirebaseFirestore.Firestore, id: any): Promise<Module> => {
+// method to a module by slug
+const findModule = async (db: FirebaseFirestore.Firestore, slug: any): Promise<Module> => {
     const modulesRef = db.collection('modules')
-    const moduleRef = modulesRef.doc(id)
+    const moduleRef = modulesRef.where('slug', '==', slug).limit(1)
 
     const module = await moduleRef.get()
 
-    if (!module.exists) {
+    if (module.empty) {
         throw createError({
             statusCode: 404,
             message: 'Module not found'
         })
     }
 
-    return module.data() as Module
+    return module.docs[0].data() as Module
 }

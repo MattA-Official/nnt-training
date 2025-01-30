@@ -1,3 +1,4 @@
+// TODO: remove in favour of API calls
 import { useFirebaseAuth, useFirestore } from 'vuefire'
 import {
     signInWithEmailAndPassword,

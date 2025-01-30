@@ -12,6 +12,10 @@ const { data: departments } = await useFetch('/api/departments', {
         }
     }))
 })
+
+definePageMeta({
+    middleware: ['auth']
+})
 </script>
 
 <template>

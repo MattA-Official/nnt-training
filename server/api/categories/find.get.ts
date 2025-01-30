@@ -1,9 +1,12 @@
 import type { Category, UserProfile } from '~/types'
 
+// Allow the user to find a category by slug
+// TODO: add more options for finding a category
+
 export default defineEventHandler(async (event) => {
     const db: FirebaseFirestore.Firestore = event.context.db
     const user: UserProfile = event.context.user
-    const id = getRouterParam(event, 'id')
+    const { slug } = getQuery(event)
 
     // If there is no user return 401
     if (!user) {
@@ -13,38 +16,38 @@ export default defineEventHandler(async (event) => {
         })
     }
 
+    // If there is no slug return 400
+    if (!slug) {
+        throw createError({
+            statusCode: 400,
+            message: 'Bad Request'
+        })
+    }
+
     // Get the category
-    const category = await getCategory(db, id).catch((error) => {
+    const category = await findCategory(db, slug).catch((error) => {
         throw createError({
             statusCode: error.statusCode,
             message: error.message
         })
     })
 
-    // if the user is not an admin and the category is not active return 403
-    if (!user.roles.admin && !category.metadata.isActive) {
-        throw createError({
-            statusCode: 403,
-            message: 'Forbidden'
-        })
-    }
-
     return category
 })
 
-// method to get a category
-const getCategory = async (db: FirebaseFirestore.Firestore, id: any): Promise<Category> => {
+// method to a category by slug
+const findCategory = async (db: FirebaseFirestore.Firestore, slug: any): Promise<Category> => {
     const categoriesRef = db.collection('categories')
-    const categoryRef = categoriesRef.doc(id)
+    const categoryRef = categoriesRef.where('slug', '==', slug).limit(1)
 
     const category = await categoryRef.get()
 
-    if (!category.exists) {
+    if (category.empty) {
         throw createError({
             statusCode: 404,
             message: 'Category not found'
         })
     }
 
-    return category.data() as Category
+    return category.docs[0].data() as Category
 }

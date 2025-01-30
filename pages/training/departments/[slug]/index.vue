@@ -6,12 +6,16 @@
     <div v-else class="">
         <div class="">
             <h1 class="">{{ data.name }}</h1>
-            <NuxtLink v-if="isAdmin" :to="`/training/departments/${route.params.slug}/edit`" class="">
+            <NuxtLink v-if="userProfile?.roles.admin" :to="`/training/departments/${route.params.slug}/edit`" class="">
                 Edit Department
             </NuxtLink>
         </div>
         <div class="">
             <p>{{ data.description }}</p>
+            <p>Created: {{ data.metadata.createdAt.toDateString() }}</p>
+            <p v-if="data.metadata.lastUpdatedAt">Last Updated: {{ data.metadata.lastUpdatedAt.toDateString() }}</p>
+
+            <NuxtLink to="/training/departments" class="">Back to Departments</NuxtLink>
         </div>
 
     </div>
@@ -19,7 +23,20 @@
 
 <script setup lang="ts">
 const route = useRoute()
-const { userProfile } = useAuth() // Assuming you have a user composable
-const isAdmin = computed(() => userProfile.value?.roles.admin)
-const { data, error } = await useFetch(`/api/departments/find?slug=${route.params.slug}`)
+const { userProfile } = useAuth()
+
+const { data, error } = await useFetch(`/api/departments/find?slug=${route.params.slug}`, {
+    transform: (data) => ({
+        ...data,
+        metadata: {
+            ...data.metadata,
+            createdAt: new Date(data.metadata.createdAt),
+            lastUpdatedAt: data.metadata.lastUpdatedAt ? new Date(data.metadata.lastUpdatedAt) : undefined
+        }
+    })
+})
+
+definePageMeta({
+    middleware: ['auth']
+})
 </script>

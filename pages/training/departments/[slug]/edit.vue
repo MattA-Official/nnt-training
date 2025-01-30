@@ -60,6 +60,10 @@ const handleSubmit = async (updatedDepartment: UpdateDepartmentForm) => {
 const handleCancel = () => {
     router.push(`/training/departments/${route.params.slug}`)
 }
+
+definePageMeta({
+    middleware: ['auth', 'admin']
+})
 </script>
 
 <style scoped>

@@ -9,13 +9,15 @@
         </div>
         <div class="actions">
             <NuxtLink :to="`/training/departments/${department.slug}`" class="">View</NuxtLink>
-            <NuxtLink :to="`/training/departments/${department.slug}/edit`" class="">Edit</NuxtLink>
+            <NuxtLink v-if="userProfile?.roles.admin" :to="`/training/departments/${department.slug}/edit`" class="">
+                Edit</NuxtLink>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import type { Department } from '~/types'
+const { userProfile } = useAuth()
 
 defineProps<{
     department: Department
