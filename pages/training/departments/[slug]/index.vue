@@ -27,8 +27,8 @@ import type { Department } from '~/types';
 const route = useRoute()
 const { userProfile } = useAuth()
 
-const { data, error } = await useFetch(`/api/departments/${route.params.slug}`, {
-    transform: (data: Department) => ({
+const { data, error } = await useFetch<Department>(`/api/departments/${route.params.slug}`, {
+    transform: (data) => ({
         ...data,
         metadata: {
             ...data.metadata,
