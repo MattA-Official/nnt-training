@@ -1,11 +1,12 @@
 // GET /api/departments
 // List all departments
 
+import { convertTimestamps } from "~/server/utils/timestamp"
 import { Department } from "~/types"
 
 export default defineEventHandler(async (event) => {
     const departments = await event.context.db.collection('departments').get()
-    const data: Department[] = departments.docs.map((doc: FirebaseFirestore.DocumentSnapshot) => doc.data() as Department)
+    const data: Department[] = departments.docs.map((doc: FirebaseFirestore.DocumentSnapshot) => convertTimestamps(doc.data() as Department))
 
     if (!data.length) {
         throw createError({

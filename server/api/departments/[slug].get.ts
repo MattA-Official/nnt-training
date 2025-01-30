@@ -1,7 +1,6 @@
 // GET /api/departments/:slug
 // Get a department by slug
 
-import { Timestamp } from "firebase/firestore"
 import { convertTimestamps } from "~/server/utils/timestamp"
 import { Department } from "~/types"
 

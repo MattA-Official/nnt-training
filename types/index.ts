@@ -72,7 +72,6 @@ export interface Category {
     name: string
     description: string
     slug: string
-    order: number
     metadata: BaseMetadata
 }
 
@@ -83,7 +82,6 @@ export interface Module {
     name: string
     description: string
     slug: string
-    order: number
     safety: boolean
     requirements?: {
         prerequisites?: string[]
@@ -142,9 +140,13 @@ export type CreateForm<T> = WithoutMetadata<WithoutId<T>>
 export type UpdateForm<T> = Partial<CreateForm<T>>
 
 export type CreateUserProfileForm = Omit<UserProfile, 'uid' | 'metadata' | 'roles'>
-
-export type UpdateUserProfileForm = Partial<CreateUserProfileForm>
 export type CreateDepartmentForm = CreateForm<Department>
 export type CreateCategoryForm = CreateForm<Category>
 export type CreateModuleForm = CreateForm<Module>
 export type CreateSessionForm = CreateForm<Session>
+
+export type UpdateUserProfileForm = Partial<CreateUserProfileForm>
+export type UpdateDepartmentForm = UpdateForm<Department>
+export type UpdateCategoryForm = UpdateForm<Category>
+export type UpdateModuleForm = UpdateForm<Module>
+export type UpdateSessionForm = UpdateForm<Session>
