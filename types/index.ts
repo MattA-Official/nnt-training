@@ -44,7 +44,7 @@ export interface UserProfile {
             language: string
         }
     }
-    metadata: BaseMetadata & {
+    metadata: Omit<BaseMetadata, 'createdBy'> & {
         lastLoginAt: Date
         verifiedAt?: Date
     }
