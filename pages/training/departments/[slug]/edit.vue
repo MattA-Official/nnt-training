@@ -30,7 +30,7 @@ import type { Department, UpdateDepartmentForm } from '~/types'
 const route = useRoute()
 const router = useRouter()
 
-const { data: department, error: fetchError } = await useFetch<Department>(`/api/departments/find?slug=${route.params.slug}`)
+const { data: department, error: fetchError } = await useFetch<Department>(`/api/departments/${route.params.slug}`)
 
 const error = ref<string | null>(null)
 const isSubmitting = ref(false)
@@ -44,13 +44,15 @@ const handleSubmit = async (updatedDepartment: UpdateDepartmentForm) => {
         isSubmitting.value = true
         error.value = null
 
-        await $fetch(`/api/departments/${department.value?.id}`, {
+        await $fetch(`/api/departments/${department.value?.id}/update`, {
             method: 'PATCH',
             body: updatedDepartment
         })
 
         await router.push(`/training/departments/${updatedDepartment.slug}`)
     } catch (err: any) {
+        console.error(err || 'Failed to update department')
+
         error.value = err.message || 'Failed to update department'
     } finally {
         isSubmitting.value = false

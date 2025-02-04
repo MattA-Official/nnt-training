@@ -23,10 +23,17 @@
                 help="Icon name from the icon library" />
         </FormGroup>
 
-        <FormGroup>
-            <FormLabel>Contact Email</FormLabel>
-            <FormInput v-model="department.contact.email" type="email" required
-                placeholder="department@newtheatre.org.uk" />
+        <FormGroup name="contact">
+            <FormGroup>
+                <FormLabel>Contact Email</FormLabel>
+                <FormInput v-model="department.contact.email" type="email" required
+                    placeholder="department@newtheatre.org.uk" />
+            </FormGroup>
+            <FormGroup>
+                <FormLabel>Contact User</FormLabel>
+                <FormInput v-model="department.contact.userId" type="text" required
+                    placeholder="User ID of the department's contact" /> <!-- TODO: Replace with a user picker -->
+            </FormGroup>
         </FormGroup>
 
         <div v-if="error" class="error">{{ error }}</div>
@@ -115,7 +122,7 @@ const handleDelete = async () => {
         isSubmitting.value = true
         error.value = null
 
-        await $fetch(`/api/departments/${props.initialData?.id}`, {
+        await $fetch(`/api/departments/${props.initialData?.id}/delete`, {
             method: 'DELETE'
         })
 
