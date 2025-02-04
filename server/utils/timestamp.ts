@@ -1,5 +1,6 @@
 import { Timestamp } from "firebase-admin/firestore"
 
+// Convert all Firestore Timestamps to JavaScript Dates it's messy but it works
 export const convertTimestamps = <T extends Record<string, any>>(data: T): T => {
     if (!data || typeof data !== 'object') return data
 
