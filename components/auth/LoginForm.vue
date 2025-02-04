@@ -9,6 +9,10 @@
 import FormInput from '../form/inputs/FormInput.vue'
 import BaseForm from '../form/templates/BaseForm.vue'
 
+const props = defineProps<{
+    redirect?: string
+}>()
+
 const { loginUser } = useFirebase()
 const router = useRouter()
 
@@ -29,7 +33,7 @@ const handleSubmit = async (data: any) => {
     processing.value = true
     try {
         await loginUser(data.email, data.password)
-        await router.push('/')
+        await router.push(props.redirect || '/')
     } catch (error: any) {
         console.error('Login error:', {
             code: error.code,
@@ -41,6 +45,6 @@ const handleSubmit = async (data: any) => {
 }
 
 const handleCancel = () => {
-    router.push('/')
+    router.push(props.redirect || '/')
 }
 </script>

@@ -62,8 +62,11 @@ export const useFirebase = () => {
             metadata: {
                 createdAt: new Date(),
                 lastLoginAt: new Date(),
-                lastUpdatedAt: new Date()
-            }
+                lastUpdatedAt: new Date(),
+                isActive: true
+            },
+            status: 'student',
+            gradYear: null
         }
 
         console.log('Attempting to create Firestore profile for user:', user.uid)
